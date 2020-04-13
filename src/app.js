@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-var repositories = [];
+const repositories = [];
 
 app.get("/repositories", (request, response) => {
   response.json(repositories);
@@ -23,7 +23,7 @@ app.post("/repositories", (request, response) => {
     likes: 0
   };
 
-  repositories = [...repositories, newRepository];
+  repositories.push(newRepository);
   return response.json(newRepository);
 });
 
@@ -51,7 +51,8 @@ app.delete("/repositories/:id", (request, response) => {
     return response.status(400).json();
   }
 
-  repositories = repositories.filter((item) => item.id != request.params.id);
+  var removeIndex = repositories.map(function(item) { return item.id; }).indexOf(request.params.id);
+  repositories.splice(removeIndex, 1);
   return response.status(204).json();
 });
 
@@ -66,8 +67,6 @@ app.post("/repositories/:id/like", (request, response) => {
     ...repository, 
     likes: ++repository.likes
   }
-
-  console.log(repository);
 
   return response.json(repository);
 });
