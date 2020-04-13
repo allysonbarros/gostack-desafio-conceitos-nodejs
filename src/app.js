@@ -28,31 +28,33 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  var repository = repositories.find((item) => item.id == request.params.id);
+  const { id } = request.params;
+  const repoIndex = repositories.findIndex((item) => item.id === request.params.id);
 
-  if (repository === undefined) {
+  if (repoIndex < 0) {
     return response.status(400).json();
   }
 
-  repository = {
-    ...repository, 
+  const repository = {
+    id,
     title: request.body.title, 
     url: request.body.url, 
     techs: request.body.techs, 
   }
 
+  repositories[repoIndex] = repository;
   return response.json(repository);
 });
 
 app.delete("/repositories/:id", (request, response) => {
-  var repository = repositories.find((item) => item.id == request.params.id);
+  const { id } = request.params;
+  const repoIndex = repositories.findIndex((item) => item.id === request.params.id);
 
-  if (repository === undefined) {
+  if (repoIndex < 0) {
     return response.status(400).json();
   }
-
-  var removeIndex = repositories.map(function(item) { return item.id; }).indexOf(request.params.id);
-  repositories.splice(removeIndex, 1);
+  
+  repositories.splice(repoIndex, 1);
   return response.status(204).json();
 });
 
